@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "vNxaLdh3HBY=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\GRIGS\\RiderProjects\\ServiceApp\\ServiceApp\\ServiceApp.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\GRIGS\\.nuget\\packages\\stub.system.data.sqlite.core.netstandard\\1.0.119\\stub.system.data.sqlite.core.netstandard.1.0.119.nupkg.sha512",
+    "C:\\Users\\GRIGS\\.nuget\\packages\\system.data.sqlite\\2.0.4\\system.data.sqlite.2.0.4.nupkg.sha512",
+    "C:\\Users\\GRIGS\\.nuget\\packages\\system.data.sqlite.core\\1.0.119\\system.data.sqlite.core.1.0.119.nupkg.sha512"
+  ],
+  "logs": []
+}
