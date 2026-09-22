@@ -19,3 +19,4 @@ C:\Users\GRIGS\RiderProjects\ServiceApp\ServiceApp\obj\Debug\net10.0-windows\ref
 C:\Users\GRIGS\RiderProjects\ServiceApp\ServiceApp\obj\Debug\net10.0-windows\ServiceApp.pdb
 C:\Users\GRIGS\RiderProjects\ServiceApp\ServiceApp\obj\Debug\net10.0-windows\ServiceApp.genruntimeconfig.cache
 C:\Users\GRIGS\RiderProjects\ServiceApp\ServiceApp\obj\Debug\net10.0-windows\ref\ServiceApp.dll
+C:\Users\GRIGS\RiderProjects\ServiceApp\ServiceApp\obj\Debug\net10.0-windows\ServiceApp.sourcelink.json

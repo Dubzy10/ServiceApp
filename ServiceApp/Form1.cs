@@ -1,4 +1,5 @@
 using ServiceApp.Models;
+using System.Text.RegularExpressions;
 
 namespace ServiceApp;
 
@@ -35,6 +36,22 @@ public partial class Form1 : Form
         string clientName = txtBoxClientName.Text;
         string phone = txtBoxClientPhoneNumber.Text;
         string email = txtBoxClientEmailAddress.Text;
+
+        if (!Regex.IsMatch(phone, @"^08\d{8}$"))
+        {
+            MessageBox.Show("Please put in a valid phone number!", "Invalid phone number",
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return;
+        }
+
+        if (!Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[a-zA-Z]{2,}$"))
+        {
+            MessageBox.Show("Please put in a valid email address!", "Invalid email address",
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            
+            return;
+        }
+        
         string device = txtBoxDeviceName.Text;
         string issue = txtBoxIssueDescription.Text;
 

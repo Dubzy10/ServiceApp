@@ -74,6 +74,7 @@ partial class Form1
         // 
         txtBoxClientName.Location = new System.Drawing.Point(163, 35);
         txtBoxClientName.Name = "txtBoxClientName";
+        txtBoxClientName.PlaceholderText = "Georgi Georgiev";
         txtBoxClientName.Size = new System.Drawing.Size(191, 23);
         txtBoxClientName.TabIndex = 3;
         // 
@@ -90,6 +91,7 @@ partial class Form1
         txtBoxIssueDescription.Location = new System.Drawing.Point(12, 334);
         txtBoxIssueDescription.Multiline = true;
         txtBoxIssueDescription.Name = "txtBoxIssueDescription";
+        txtBoxIssueDescription.PlaceholderText = "Give as much detail as possible";
         txtBoxIssueDescription.Size = new System.Drawing.Size(808, 130);
         txtBoxIssueDescription.TabIndex = 5;
         txtBoxIssueDescription.TextChanged += txtBoxIssueDescription_TextChanged;
@@ -118,6 +120,7 @@ partial class Form1
         // 
         txtBoxClientPhoneNumber.Location = new System.Drawing.Point(268, 99);
         txtBoxClientPhoneNumber.Name = "txtBoxClientPhoneNumber";
+        txtBoxClientPhoneNumber.PlaceholderText = "08XXXXXXXX";
         txtBoxClientPhoneNumber.Size = new System.Drawing.Size(229, 23);
         txtBoxClientPhoneNumber.TabIndex = 8;
         // 
@@ -125,6 +128,7 @@ partial class Form1
         // 
         txtBoxClientEmailAddress.Location = new System.Drawing.Point(268, 151);
         txtBoxClientEmailAddress.Name = "txtBoxClientEmailAddress";
+        txtBoxClientEmailAddress.PlaceholderText = "name@email.com";
         txtBoxClientEmailAddress.Size = new System.Drawing.Size(168, 23);
         txtBoxClientEmailAddress.TabIndex = 9;
         // 
