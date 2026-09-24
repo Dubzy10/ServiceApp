@@ -1,0 +1,58 @@
+USE master;
+GO
+
+IF EXISTS (SELECT name FROM sys.databases WHERE name = 'ServiceAppDB')
+BEGIN
+    ALTER DATABASE ServiceAppDB SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+    DROP DATABASE ServiceAppDB;
+END
+GO
+
+CREATE DATABASE ServiceAppDB;
+GO
+
+USE ServiceAppDB;
+GO
+
+CREATE TABLE CLIENTS (
+    ID INT IDENTITY(1,1) PRIMARY KEY,
+    Full_Name NVARCHAR(100) NOT NULL,
+    Phone_Number VARCHAR(20) NOT NULL,
+    Email VARCHAR(100) NOT NULL
+);
+GO
+
+CREATE TABLE TECHNICIANS (
+    ID INT IDENTITY(1,1) PRIMARY KEY,
+    Technician_Name NVARCHAR(100) NOT NULL,
+    Technician_Type NVARCHAR(100) NOT NULL
+);
+GO
+
+CREATE TABLE REPAIR_REQUEST (
+    ID INT IDENTITY(1, 1) PRIMARY KEY,
+    Client_ID INT NOT NULL FOREIGN KEY REFERENCES CLIENTS(ID),
+    Technician_ID INT NULL FOREIGN KEY REFERENCES TECHNICIANS(ID),
+    Device_Name NVARCHAR(100) NOT NULL,
+    Issue_Description NVARCHAR(MAX) NOT NULL,
+    Request_Date DATETIME NOT NULL DEFAULT GETDATE(),
+    Completion_Date DATETIME NULL,
+    Status NVARCHAR(50) NOT NULL DEFAULT N'accepted'
+        CHECK (Status IN (N'accepted', N'worked on', N'awaiting replacement parts', N'finished', N'rejected'))
+);
+GO
+
+CREATE TABLE Items_Request (
+    ID INT IDENTITY(1, 1) PRIMARY KEY,
+    Request_ID INT NOT NULL FOREIGN KEY REFERENCES REPAIR_REQUEST(ID),
+    Items_Description NVARCHAR(255) NOT NULL,
+    Quantity DECIMAL(10,2) NOT NULL DEFAULT 1,
+    Unit_Price DECIMAL(10,2) NOT NULL
+);
+GO
+
+INSERT INTO TECHNICIANS (Technician_Name, Technician_Type) VALUES 
+('Ivan Ivanov', 'Large Appliances'),
+('Petran Petrankov', 'Small Appliances'),
+('Stoyan Kolev', 'Air Conditioning');
+GO
