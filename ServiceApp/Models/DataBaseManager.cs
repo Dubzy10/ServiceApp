@@ -141,4 +141,72 @@ public class DataBaseManager
             }
         }
     }
+    
+    public static DataTable GetRequestsForComboBox()
+    {
+        using (SqlConnection conn = new SqlConnection(connectionString))
+        {
+            string query = @"
+                SELECT r.ID, 
+                       '#' + CAST(r.ID AS NVARCHAR(10)) + ' - ' + r.Device_Name + ' (' + c.Full_Name + ')' AS Display
+                FROM REPAIR_REQUEST r
+                INNER JOIN CLIENTS c ON r.Client_ID = c.ID
+                ORDER BY r.ID DESC";
+
+            using (SqlCommand cmd = new SqlCommand(query, conn))
+            using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+            {
+                DataTable dt = new DataTable();
+                adapter.Fill(dt);
+                return dt;
+            }
+        }
+    }
+
+    public static void AddRequestItem(int requestId, string description, decimal quantity, decimal unitPrice)
+    {
+        using (SqlConnection conn = new SqlConnection(connectionString))
+        {
+            string query = @"
+                INSERT INTO Items_Request (Request_ID, Items_Description, Quantity, Unit_Price)
+                VALUES (@RequestId, @Description, @Quantity, @UnitPrice)";
+
+            using (SqlCommand cmd = new SqlCommand(query, conn))
+            {
+                cmd.Parameters.AddWithValue("@RequestId", requestId);
+                cmd.Parameters.AddWithValue("@Description", description);
+                cmd.Parameters.AddWithValue("@Quantity", quantity);
+                cmd.Parameters.AddWithValue("@UnitPrice", unitPrice);
+
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
+        }
+    }
+    
+    public static DataTable GetItemsForRequest(int requestId)
+    {   
+        using (SqlConnection conn = new SqlConnection(connectionString))
+        {
+            string query = @"
+                SELECT ID, 
+                       Items_Description AS [Description], 
+                       Quantity, 
+                       Unit_Price AS [Unit Price (€)], 
+                       CAST(Quantity * Unit_Price AS DECIMAL(10,2)) AS [Line Total (€)]
+                FROM Items_Request
+                WHERE Request_ID = @RequestId";
+
+            using (SqlCommand cmd = new SqlCommand(query, conn))
+            {
+                cmd.Parameters.AddWithValue("@RequestId", requestId);
+                using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+                {
+                    DataTable dt = new DataTable();
+                    adapter.Fill(dt);
+                    return dt;
+                }
+            }
+        }
+    }
 }
