@@ -209,4 +209,189 @@ public class DataBaseManager
             }
         }
     }
+    
+    public static void UpdateRequestStatus(int requestId, string newStatus)
+    {
+        using (SqlConnection conn = new SqlConnection(connectionString))
+        {
+            string query = @"
+            UPDATE REPAIR_REQUEST
+            SET Status = @Status,
+                Completion_Date = CASE 
+                    WHEN @Status IN ('finished', 'rejected') THEN GETDATE()
+                    ELSE NULL 
+                END
+            WHERE ID = @RequestId";
+
+            using (SqlCommand cmd = new SqlCommand(query, conn))
+            {
+                cmd.Parameters.AddWithValue("@Status", newStatus);
+                cmd.Parameters.AddWithValue("@RequestId", requestId);
+
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
+        }
+    }
+    
+    public static DataTable GetTechniciansOverview()
+    {
+        using (SqlConnection conn = new SqlConnection(connectionString))
+        {
+            string query = @"
+            SELECT 
+                t.ID,
+                t.Technician_Name AS [Name],
+                t.Technician_Type AS [Specialty],
+                COUNT(r.ID) AS [Active Requests]
+            FROM TECHNICIANS t
+            LEFT JOIN REPAIR_REQUEST r 
+                ON t.ID = r.Technician_ID 
+                AND r.Status NOT IN ('finished', 'rejected')
+            GROUP BY t.ID, t.Technician_Name, t.Technician_Type
+            ORDER BY t.ID";
+
+            using (SqlCommand cmd = new SqlCommand(query, conn))
+            using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+            {
+                DataTable dt = new DataTable();
+                adapter.Fill(dt);
+                return dt;
+            }
+        }
+    }
+    
+    public static DataTable GetTechniciansReport(DateTime fromDate, DateTime toDate)
+    {
+        using (SqlConnection conn = new SqlConnection(connectionString))
+        {
+            string query = @"
+            SELECT 
+                t.Technician_Name AS [Technician],
+                r.Status AS [Status],
+                COUNT(r.ID) AS [Requests Count],
+                CAST(
+                    ISNULL(SUM(it.PartsSum), 0) + 
+                    SUM(CASE WHEN r.Status = 'finished' THEN 10.00 ELSE 0.00 END)
+                    AS DECIMAL(10, 2)
+                ) AS [Total Revenue (€)]
+            FROM REPAIR_REQUEST r
+            INNER JOIN TECHNICIANS t ON r.Technician_ID = t.ID
+            LEFT JOIN (
+                SELECT Request_ID, SUM(Quantity * Unit_Price) AS PartsSum
+                FROM Items_Request
+                GROUP BY Request_ID
+            ) it ON r.ID = it.Request_ID
+            WHERE CAST(r.Acceptance_Date AS DATE) >= @FromDate 
+              AND CAST(r.Acceptance_Date AS DATE) <= @ToDate
+            GROUP BY t.Technician_Name, r.Status
+            ORDER BY t.Technician_Name, r.Status";
+
+            using (SqlCommand cmd = new SqlCommand(query, conn))
+            {
+                cmd.Parameters.AddWithValue("@FromDate", fromDate.Date);
+                cmd.Parameters.AddWithValue("@ToDate", toDate.Date);
+
+                using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+                {
+                    DataTable dt = new DataTable();
+                    adapter.Fill(dt);
+                    return dt;
+                }
+            }
+        }
+    }
+    
+public static DataTable GetAllClients()
+{
+    using (SqlConnection conn = new SqlConnection(connectionString))
+    {
+        string query = "SELECT ID, Full_Name AS [Name], Phone_Number AS [Phone], Email FROM CLIENTS ORDER BY ID DESC";
+        using (SqlCommand cmd = new SqlCommand(query, conn))
+        using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+        {
+            DataTable dt = new DataTable();
+            adapter.Fill(dt);
+            return dt;
+        }
+    }
+}
+
+public static void AddClient(string name, string phone, string email)
+{
+    using (SqlConnection conn = new SqlConnection(connectionString))
+    {
+        string query = "INSERT INTO CLIENTS (Full_Name, Phone_Number, Email) VALUES (@Name, @Phone, @Email)";
+        using (SqlCommand cmd = new SqlCommand(query, conn))
+        {
+            cmd.Parameters.AddWithValue("@Name", name);
+            cmd.Parameters.AddWithValue("@Phone", phone);
+            cmd.Parameters.AddWithValue("@Email", email);
+
+            conn.Open();
+            cmd.ExecuteNonQuery();
+        }
+    }
+}
+
+public static void UpdateClient(int clientId, string name, string phone, string email)
+{
+    using (SqlConnection conn = new SqlConnection(connectionString))
+    {
+        string query = "UPDATE CLIENTS SET Full_Name = @Name, Phone_Number = @Phone, Email = @Email WHERE ID = @ID";
+        using (SqlCommand cmd = new SqlCommand(query, conn))
+        {
+            cmd.Parameters.AddWithValue("@ID", clientId);
+            cmd.Parameters.AddWithValue("@Name", name);
+            cmd.Parameters.AddWithValue("@Phone", phone);
+            cmd.Parameters.AddWithValue("@Email", email);
+
+            conn.Open();
+            cmd.ExecuteNonQuery();
+        }
+    }
+}
+
+public static bool DeleteClient(int clientId, out string errorMessage)
+{
+    errorMessage = string.Empty;
+    using (SqlConnection conn = new SqlConnection(connectionString))
+    {
+        conn.Open();
+        
+        string checkQuery = "SELECT COUNT(*) FROM REPAIR_REQUEST WHERE Client_ID = @ID";
+        using (SqlCommand checkCmd = new SqlCommand(checkQuery, conn))
+        {
+            checkCmd.Parameters.AddWithValue("@ID", clientId);
+            int count = (int)checkCmd.ExecuteScalar();
+            if (count > 0)
+            {
+                errorMessage = "Cannot delete this client because they have existing repair requests!";
+                return false;
+            }
+        }
+        
+        string deleteQuery = "DELETE FROM CLIENTS WHERE ID = @ID";
+        using (SqlCommand deleteCmd = new SqlCommand(deleteQuery, conn))
+        {
+            deleteCmd.Parameters.AddWithValue("@ID", clientId);
+            deleteCmd.ExecuteNonQuery();
+        }
+    }
+    return true;
+    }
+
+public static int GetRequestItemsCount(int requestId)
+{
+    using (SqlConnection conn = new SqlConnection(connectionString))
+    {
+        string query = "SELECT COUNT(*) FROM Items_Request WHERE Request_ID = @RequestID";
+        using (SqlCommand cmd = new SqlCommand(query, conn))
+        {
+            cmd.Parameters.AddWithValue("@RequestID", requestId);
+            conn.Open();
+            return (int)cmd.ExecuteScalar();
+        }
+    }
+}
 }

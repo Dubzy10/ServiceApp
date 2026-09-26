@@ -45,6 +45,9 @@ partial class Form1
         lblClientName = new System.Windows.Forms.Label();
         lblDeviceForRepair = new System.Windows.Forms.Label();
         tabPage2 = new System.Windows.Forms.TabPage();
+        btnUpdateStatus = new System.Windows.Forms.Button();
+        cbNewStatus = new System.Windows.Forms.ComboBox();
+        lblChangeStatus = new System.Windows.Forms.Label();
         btnClear = new System.Windows.Forms.Button();
         cbStatusFilter = new System.Windows.Forms.ComboBox();
         lblStatus = new System.Windows.Forms.Label();
@@ -52,6 +55,13 @@ partial class Form1
         lblSearch = new System.Windows.Forms.Label();
         dgvRequestsList = new System.Windows.Forms.DataGridView();
         tabPage3 = new System.Windows.Forms.TabPage();
+        btnExportToCSV = new System.Windows.Forms.Button();
+        btnGenerateReport = new System.Windows.Forms.Button();
+        dtpToDate = new System.Windows.Forms.DateTimePicker();
+        lblTo = new System.Windows.Forms.Label();
+        dtpFromDate = new System.Windows.Forms.DateTimePicker();
+        lblFrom = new System.Windows.Forms.Label();
+        dgvTechniciansList = new System.Windows.Forms.DataGridView();
         tabPage4 = new System.Windows.Forms.TabPage();
         lblTotalPrice = new System.Windows.Forms.Label();
         dgvPartsList = new System.Windows.Forms.DataGridView();
@@ -64,14 +74,30 @@ partial class Form1
         lblItemPart = new System.Windows.Forms.Label();
         cbPartsRequest = new System.Windows.Forms.ComboBox();
         lblSelectRequest = new System.Windows.Forms.Label();
+        tabClients = new System.Windows.Forms.TabPage();
+        dgvClientsList = new System.Windows.Forms.DataGridView();
+        btnClearClient = new System.Windows.Forms.Button();
+        btnDeleteClient = new System.Windows.Forms.Button();
+        btnUpdateClient = new System.Windows.Forms.Button();
+        btnAddClient = new System.Windows.Forms.Button();
+        txtClientEmail = new System.Windows.Forms.TextBox();
+        label2 = new System.Windows.Forms.Label();
+        txtClientPhone = new System.Windows.Forms.TextBox();
+        lblClientPhone = new System.Windows.Forms.Label();
+        txtClientName = new System.Windows.Forms.TextBox();
+        lblCleintName = new System.Windows.Forms.Label();
         tbCreateARequest.SuspendLayout();
         tabPage1.SuspendLayout();
         tabPage2.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)dgvRequestsList).BeginInit();
+        tabPage3.SuspendLayout();
+        ((System.ComponentModel.ISupportInitialize)dgvTechniciansList).BeginInit();
         tabPage4.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)dgvPartsList).BeginInit();
         ((System.ComponentModel.ISupportInitialize)nudUnitPrice).BeginInit();
         ((System.ComponentModel.ISupportInitialize)nudQuantity).BeginInit();
+        tabClients.SuspendLayout();
+        ((System.ComponentModel.ISupportInitialize)dgvClientsList).BeginInit();
         SuspendLayout();
         // 
         // tbCreateARequest
@@ -80,6 +106,7 @@ partial class Form1
         tbCreateARequest.Controls.Add(tabPage2);
         tbCreateARequest.Controls.Add(tabPage3);
         tbCreateARequest.Controls.Add(tabPage4);
+        tbCreateARequest.Controls.Add(tabClients);
         tbCreateARequest.Dock = System.Windows.Forms.DockStyle.Fill;
         tbCreateARequest.Location = new System.Drawing.Point(0, 0);
         tbCreateARequest.Name = "tbCreateARequest";
@@ -225,6 +252,9 @@ partial class Form1
         // 
         // tabPage2
         // 
+        tabPage2.Controls.Add(btnUpdateStatus);
+        tabPage2.Controls.Add(cbNewStatus);
+        tabPage2.Controls.Add(lblChangeStatus);
         tabPage2.Controls.Add(btnClear);
         tabPage2.Controls.Add(cbStatusFilter);
         tabPage2.Controls.Add(lblStatus);
@@ -239,8 +269,37 @@ partial class Form1
         tabPage2.Text = "Requests list";
         tabPage2.UseVisualStyleBackColor = true;
         // 
+        // btnUpdateStatus
+        // 
+        btnUpdateStatus.Font = new System.Drawing.Font("Segoe UI", 18F);
+        btnUpdateStatus.Location = new System.Drawing.Point(406, 91);
+        btnUpdateStatus.Name = "btnUpdateStatus";
+        btnUpdateStatus.Size = new System.Drawing.Size(179, 47);
+        btnUpdateStatus.TabIndex = 8;
+        btnUpdateStatus.Text = "Update status";
+        btnUpdateStatus.UseVisualStyleBackColor = true;
+        btnUpdateStatus.Click += btnUpdateStatus_Click;
+        // 
+        // cbNewStatus
+        // 
+        cbNewStatus.FormattingEnabled = true;
+        cbNewStatus.Location = new System.Drawing.Point(591, 58);
+        cbNewStatus.Name = "cbNewStatus";
+        cbNewStatus.Size = new System.Drawing.Size(200, 23);
+        cbNewStatus.TabIndex = 7;
+        // 
+        // lblChangeStatus
+        // 
+        lblChangeStatus.Font = new System.Drawing.Font("Segoe UI", 18F);
+        lblChangeStatus.Location = new System.Drawing.Point(406, 47);
+        lblChangeStatus.Name = "lblChangeStatus";
+        lblChangeStatus.Size = new System.Drawing.Size(179, 50);
+        lblChangeStatus.TabIndex = 6;
+        lblChangeStatus.Text = "Change status: ";
+        // 
         // btnClear
         // 
+        btnClear.Font = new System.Drawing.Font("Segoe UI", 18F);
         btnClear.Location = new System.Drawing.Point(30, 84);
         btnClear.Name = "btnClear";
         btnClear.Size = new System.Drawing.Size(179, 46);
@@ -296,6 +355,13 @@ partial class Form1
         // 
         // tabPage3
         // 
+        tabPage3.Controls.Add(btnExportToCSV);
+        tabPage3.Controls.Add(btnGenerateReport);
+        tabPage3.Controls.Add(dtpToDate);
+        tabPage3.Controls.Add(lblTo);
+        tabPage3.Controls.Add(dtpFromDate);
+        tabPage3.Controls.Add(lblFrom);
+        tabPage3.Controls.Add(dgvTechniciansList);
         tabPage3.Location = new System.Drawing.Point(4, 24);
         tabPage3.Name = "tabPage3";
         tabPage3.Padding = new System.Windows.Forms.Padding(3);
@@ -303,6 +369,71 @@ partial class Form1
         tabPage3.TabIndex = 2;
         tabPage3.Text = "Technicians";
         tabPage3.UseVisualStyleBackColor = true;
+        // 
+        // btnExportToCSV
+        // 
+        btnExportToCSV.Font = new System.Drawing.Font("Segoe UI", 18F);
+        btnExportToCSV.Location = new System.Drawing.Point(250, 102);
+        btnExportToCSV.Name = "btnExportToCSV";
+        btnExportToCSV.Size = new System.Drawing.Size(225, 44);
+        btnExportToCSV.TabIndex = 6;
+        btnExportToCSV.Text = "Export to CSV";
+        btnExportToCSV.UseVisualStyleBackColor = true;
+        btnExportToCSV.Click += btnExportToCSV_Click;
+        // 
+        // btnGenerateReport
+        // 
+        btnGenerateReport.Font = new System.Drawing.Font("Segoe UI", 18F);
+        btnGenerateReport.Location = new System.Drawing.Point(3, 102);
+        btnGenerateReport.Name = "btnGenerateReport";
+        btnGenerateReport.Size = new System.Drawing.Size(230, 45);
+        btnGenerateReport.TabIndex = 5;
+        btnGenerateReport.Text = "Generate report";
+        btnGenerateReport.UseVisualStyleBackColor = true;
+        btnGenerateReport.Click += btnGenerateReport_Click;
+        // 
+        // dtpToDate
+        // 
+        dtpToDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+        dtpToDate.Location = new System.Drawing.Point(116, 47);
+        dtpToDate.Name = "dtpToDate";
+        dtpToDate.Size = new System.Drawing.Size(113, 23);
+        dtpToDate.TabIndex = 4;
+        // 
+        // lblTo
+        // 
+        lblTo.Font = new System.Drawing.Font("Segoe UI", 18F);
+        lblTo.Location = new System.Drawing.Point(116, 3);
+        lblTo.Name = "lblTo";
+        lblTo.Size = new System.Drawing.Size(113, 32);
+        lblTo.TabIndex = 3;
+        lblTo.Text = "To:";
+        // 
+        // dtpFromDate
+        // 
+        dtpFromDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+        dtpFromDate.Location = new System.Drawing.Point(3, 47);
+        dtpFromDate.Name = "dtpFromDate";
+        dtpFromDate.Size = new System.Drawing.Size(107, 23);
+        dtpFromDate.TabIndex = 2;
+        // 
+        // lblFrom
+        // 
+        lblFrom.Font = new System.Drawing.Font("Segoe UI", 18F);
+        lblFrom.Location = new System.Drawing.Point(6, 3);
+        lblFrom.Name = "lblFrom";
+        lblFrom.Size = new System.Drawing.Size(75, 32);
+        lblFrom.TabIndex = 1;
+        lblFrom.Text = "From: ";
+        // 
+        // dgvTechniciansList
+        // 
+        dgvTechniciansList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+        dgvTechniciansList.Location = new System.Drawing.Point(3, 189);
+        dgvTechniciansList.Name = "dgvTechniciansList";
+        dgvTechniciansList.Size = new System.Drawing.Size(1018, 515);
+        dgvTechniciansList.TabIndex = 0;
+        dgvTechniciansList.Text = "dataGridView1";
         // 
         // tabPage4
         // 
@@ -337,9 +468,9 @@ partial class Form1
         // dgvPartsList
         // 
         dgvPartsList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-        dgvPartsList.Location = new System.Drawing.Point(12, 264);
+        dgvPartsList.Location = new System.Drawing.Point(0, 264);
         dgvPartsList.Name = "dgvPartsList";
-        dgvPartsList.Size = new System.Drawing.Size(1004, 326);
+        dgvPartsList.Size = new System.Drawing.Size(1016, 326);
         dgvPartsList.TabIndex = 9;
         dgvPartsList.Text = "dataGridView1";
         // 
@@ -425,6 +556,127 @@ partial class Form1
         lblSelectRequest.TabIndex = 0;
         lblSelectRequest.Text = "Select Request: ";
         // 
+        // tabClients
+        // 
+        tabClients.Controls.Add(dgvClientsList);
+        tabClients.Controls.Add(btnClearClient);
+        tabClients.Controls.Add(btnDeleteClient);
+        tabClients.Controls.Add(btnUpdateClient);
+        tabClients.Controls.Add(btnAddClient);
+        tabClients.Controls.Add(txtClientEmail);
+        tabClients.Controls.Add(label2);
+        tabClients.Controls.Add(txtClientPhone);
+        tabClients.Controls.Add(lblClientPhone);
+        tabClients.Controls.Add(txtClientName);
+        tabClients.Controls.Add(lblCleintName);
+        tabClients.Location = new System.Drawing.Point(4, 24);
+        tabClients.Name = "tabClients";
+        tabClients.Padding = new System.Windows.Forms.Padding(3);
+        tabClients.Size = new System.Drawing.Size(1017, 701);
+        tabClients.TabIndex = 4;
+        tabClients.Text = "Clients";
+        tabClients.UseVisualStyleBackColor = true;
+        // 
+        // dgvClientsList
+        // 
+        dgvClientsList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+        dgvClientsList.Location = new System.Drawing.Point(494, 1);
+        dgvClientsList.Name = "dgvClientsList";
+        dgvClientsList.ReadOnly = true;
+        dgvClientsList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+        dgvClientsList.Size = new System.Drawing.Size(526, 703);
+        dgvClientsList.TabIndex = 10;
+        dgvClientsList.Text = "dataGridView1";
+        // 
+        // btnClearClient
+        // 
+        btnClearClient.Font = new System.Drawing.Font("Segoe UI", 18F);
+        btnClearClient.Location = new System.Drawing.Point(25, 451);
+        btnClearClient.Name = "btnClearClient";
+        btnClearClient.Size = new System.Drawing.Size(153, 62);
+        btnClearClient.TabIndex = 9;
+        btnClearClient.Text = "Clear";
+        btnClearClient.UseVisualStyleBackColor = true;
+        // 
+        // btnDeleteClient
+        // 
+        btnDeleteClient.Font = new System.Drawing.Font("Segoe UI", 18F);
+        btnDeleteClient.Location = new System.Drawing.Point(22, 350);
+        btnDeleteClient.Name = "btnDeleteClient";
+        btnDeleteClient.Size = new System.Drawing.Size(156, 73);
+        btnDeleteClient.TabIndex = 8;
+        btnDeleteClient.Text = "Delete client";
+        btnDeleteClient.UseVisualStyleBackColor = true;
+        // 
+        // btnUpdateClient
+        // 
+        btnUpdateClient.Font = new System.Drawing.Font("Segoe UI", 18F);
+        btnUpdateClient.Location = new System.Drawing.Point(22, 246);
+        btnUpdateClient.Name = "btnUpdateClient";
+        btnUpdateClient.Size = new System.Drawing.Size(157, 77);
+        btnUpdateClient.TabIndex = 7;
+        btnUpdateClient.Text = "Update client";
+        btnUpdateClient.UseVisualStyleBackColor = true;
+        btnUpdateClient.Click += button2_Click;
+        // 
+        // btnAddClient
+        // 
+        btnAddClient.Font = new System.Drawing.Font("Segoe UI", 18F);
+        btnAddClient.Location = new System.Drawing.Point(20, 166);
+        btnAddClient.Name = "btnAddClient";
+        btnAddClient.Size = new System.Drawing.Size(159, 58);
+        btnAddClient.TabIndex = 6;
+        btnAddClient.Text = "Add client";
+        btnAddClient.UseVisualStyleBackColor = true;
+        // 
+        // txtClientEmail
+        // 
+        txtClientEmail.Location = new System.Drawing.Point(215, 109);
+        txtClientEmail.Name = "txtClientEmail";
+        txtClientEmail.Size = new System.Drawing.Size(220, 23);
+        txtClientEmail.TabIndex = 5;
+        // 
+        // label2
+        // 
+        label2.Font = new System.Drawing.Font("Segoe UI", 18F);
+        label2.Location = new System.Drawing.Point(30, 102);
+        label2.Name = "label2";
+        label2.Size = new System.Drawing.Size(179, 41);
+        label2.TabIndex = 4;
+        label2.Text = "E-mail address: ";
+        // 
+        // txtClientPhone
+        // 
+        txtClientPhone.Location = new System.Drawing.Point(215, 61);
+        txtClientPhone.Name = "txtClientPhone";
+        txtClientPhone.Size = new System.Drawing.Size(148, 23);
+        txtClientPhone.TabIndex = 3;
+        // 
+        // lblClientPhone
+        // 
+        lblClientPhone.Font = new System.Drawing.Font("Segoe UI", 18F);
+        lblClientPhone.Location = new System.Drawing.Point(22, 61);
+        lblClientPhone.Name = "lblClientPhone";
+        lblClientPhone.Size = new System.Drawing.Size(187, 45);
+        lblClientPhone.TabIndex = 2;
+        lblClientPhone.Text = "Phone number:";
+        // 
+        // txtClientName
+        // 
+        txtClientName.Location = new System.Drawing.Point(175, 26);
+        txtClientName.Name = "txtClientName";
+        txtClientName.Size = new System.Drawing.Size(188, 23);
+        txtClientName.TabIndex = 1;
+        // 
+        // lblCleintName
+        // 
+        lblCleintName.Font = new System.Drawing.Font("Segoe UI", 18F);
+        lblCleintName.Location = new System.Drawing.Point(18, 15);
+        lblCleintName.Name = "lblCleintName";
+        lblCleintName.Size = new System.Drawing.Size(161, 40);
+        lblCleintName.TabIndex = 0;
+        lblCleintName.Text = "Client Name: ";
+        // 
         // Form1
         // 
         AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -438,13 +690,55 @@ partial class Form1
         tabPage2.ResumeLayout(false);
         tabPage2.PerformLayout();
         ((System.ComponentModel.ISupportInitialize)dgvRequestsList).EndInit();
+        tabPage3.ResumeLayout(false);
+        ((System.ComponentModel.ISupportInitialize)dgvTechniciansList).EndInit();
         tabPage4.ResumeLayout(false);
         tabPage4.PerformLayout();
         ((System.ComponentModel.ISupportInitialize)dgvPartsList).EndInit();
         ((System.ComponentModel.ISupportInitialize)nudUnitPrice).EndInit();
         ((System.ComponentModel.ISupportInitialize)nudQuantity).EndInit();
+        tabClients.ResumeLayout(false);
+        tabClients.PerformLayout();
+        ((System.ComponentModel.ISupportInitialize)dgvClientsList).EndInit();
         ResumeLayout(false);
     }
+
+    private System.Windows.Forms.DataGridView dgvClientsList;
+
+    private System.Windows.Forms.Button btnClearClient;
+
+    private System.Windows.Forms.Button btnDeleteClient;
+
+    private System.Windows.Forms.TextBox txtClientName;
+    private System.Windows.Forms.Label lblClientPhone;
+    private System.Windows.Forms.TextBox txtClientPhone;
+    private System.Windows.Forms.Label label2;
+    private System.Windows.Forms.TextBox txtClientEmail;
+    private System.Windows.Forms.Button btnAddClient;
+    private System.Windows.Forms.Button btnUpdateClient;
+
+    private System.Windows.Forms.Label lblCleintName;
+
+    private System.Windows.Forms.TabPage tabClients;
+
+    private System.Windows.Forms.Button btnGenerateReport;
+    private System.Windows.Forms.Button btnExportToCSV;
+
+    private System.Windows.Forms.DateTimePicker dtpToDate;
+
+    private System.Windows.Forms.Label lblTo;
+
+    private System.Windows.Forms.DateTimePicker dtpFromDate;
+
+    private System.Windows.Forms.Label lblFrom;
+
+    private System.Windows.Forms.DataGridView dgvTechniciansList;
+
+    private System.Windows.Forms.Button btnUpdateStatus;
+
+    private System.Windows.Forms.ComboBox cbNewStatus;
+
+    private System.Windows.Forms.Label lblChangeStatus;
 
     private System.Windows.Forms.DataGridView dgvPartsList;
     private System.Windows.Forms.Label lblTotalPrice;
