@@ -26,11 +26,25 @@ public partial class Form1 : Form
             LoadTechniciansOverview();
             LoadClientsData();
             
+            cbTechnicianFilter.Items.Clear();
+            cbTechnicianFilter.Items.Add("All");
+
+            DataTable dtTechs = DataBaseManager.GetAllTechnicians(); 
+            foreach (DataRow row in dtTechs.Rows)
+            {
+                cbTechnicianFilter.Items.Add(row["Name"].ToString());
+            }
+
+            cbTechnicianFilter.SelectedIndex = 0;
+            
             dgvRequestsList.SelectionChanged += dgvRequestsList_SelectionChanged;
             dgvClientsList.SelectionChanged += dgvClientsList_SelectionChanged;
             btnDeleteClient.Click += btnDeleteClient_Click;
             btnClearClient.Click += btnClearClient_Click;
             btnAddClient.Click += btnAddClient_Click;
+            cbTechnicianFilter.SelectedIndexChanged += (s, ev) => ApplyFilters();
+            cbStatusFilter.SelectedIndexChanged += (s, ev) => ApplyFilters();
+            txtSearch.TextChanged += (s, ev) => ApplyFilters();
         }
         catch (Exception ex)
         {
@@ -221,19 +235,25 @@ public partial class Form1 : Form
             return;
 
         List<string> filters = new List<string>();
-        
+
         string search = txtSearch.Text.Trim().Replace("'", "''");
         if (!string.IsNullOrEmpty(search))
         {
             filters.Add($"([Name] LIKE '%{search}%' OR [Phone] LIKE '%{search}%' OR [Device] LIKE '%{search}%')");
         }
-        
+
         if (cbStatusFilter.SelectedItem != null && cbStatusFilter.SelectedItem.ToString() != "All")
         {
             string selectedStatus = cbStatusFilter.SelectedItem.ToString().Replace("'", "''");
             filters.Add($"[Status] = '{selectedStatus}'");
         }
         
+        if (cbTechnicianFilter.SelectedItem != null && cbTechnicianFilter.SelectedItem.ToString() != "All")
+        {
+            string selectedTech = cbTechnicianFilter.SelectedItem.ToString().Replace("'", "''");
+            filters.Add($"[Technician] = '{selectedTech}'");
+        }
+
         dt.DefaultView.RowFilter = string.Join(" AND ", filters);
     }
 
@@ -334,9 +354,17 @@ public partial class Form1 : Form
             var row = dgvRequestsList.SelectedRows[0];
             if (row.Cells["Status"].Value != null)
             {
-                string currentStatus = row.Cells["Status"].Value.ToString();
+                string currentStatus = row.Cells["Status"].Value.ToString().Trim();
                 cbNewStatus.SelectedItem = currentStatus;
+                bool isFinished = currentStatus.Equals("finished", StringComparison.OrdinalIgnoreCase);
+                btnUpdateStatus.Enabled = !isFinished;
+                cbNewStatus.Enabled = !isFinished;
             }
+        }
+        else
+        {
+            btnUpdateStatus.Enabled = false;
+            cbNewStatus.Enabled = false;
         }
     }
 
@@ -697,5 +725,19 @@ private void btnDeleteClient_Click(object sender, EventArgs e)
     private void btnClearClient_Click(object sender, EventArgs e)
     {
         ClearClientFields();
+    }
+    
+    private void LoadTechniciansFilter()
+    {
+        cbTechnicianFilter.Items.Clear();
+        cbTechnicianFilter.Items.Add("All");
+        
+        DataTable dtTechnicians = DataBaseManager.GetAllTechnicians(); 
+        foreach (DataRow row in dtTechnicians.Rows)
+        {
+            cbTechnicianFilter.Items.Add(row["Name"].ToString());
+        }
+
+        cbTechnicianFilter.SelectedIndex = 0; 
     }
 }

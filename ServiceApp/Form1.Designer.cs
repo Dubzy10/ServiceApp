@@ -86,6 +86,9 @@ partial class Form1
         lblClientPhone = new System.Windows.Forms.Label();
         txtClientName = new System.Windows.Forms.TextBox();
         lblCleintName = new System.Windows.Forms.Label();
+        lblTechnician = new System.Windows.Forms.Label();
+        cbTechnicianFilter = new System.Windows.Forms.ComboBox();
+        lbltechnicians = new System.Windows.Forms.Label();
         tbCreateARequest.SuspendLayout();
         tabPage1.SuspendLayout();
         tabPage2.SuspendLayout();
@@ -252,6 +255,9 @@ partial class Form1
         // 
         // tabPage2
         // 
+        tabPage2.Controls.Add(lbltechnicians);
+        tabPage2.Controls.Add(cbTechnicianFilter);
+        tabPage2.Controls.Add(lblTechnician);
         tabPage2.Controls.Add(btnUpdateStatus);
         tabPage2.Controls.Add(cbNewStatus);
         tabPage2.Controls.Add(lblChangeStatus);
@@ -300,7 +306,7 @@ partial class Form1
         // btnClear
         // 
         btnClear.Font = new System.Drawing.Font("Segoe UI", 18F);
-        btnClear.Location = new System.Drawing.Point(30, 84);
+        btnClear.Location = new System.Drawing.Point(8, 51);
         btnClear.Name = "btnClear";
         btnClear.Size = new System.Drawing.Size(179, 46);
         btnClear.TabIndex = 5;
@@ -347,9 +353,9 @@ partial class Form1
         // dgvRequestsList
         // 
         dgvRequestsList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-        dgvRequestsList.Location = new System.Drawing.Point(3, 178);
+        dgvRequestsList.Location = new System.Drawing.Point(3, 271);
         dgvRequestsList.Name = "dgvRequestsList";
-        dgvRequestsList.Size = new System.Drawing.Size(1011, 520);
+        dgvRequestsList.Size = new System.Drawing.Size(1011, 427);
         dgvRequestsList.TabIndex = 0;
         dgvRequestsList.Text = "dataGridView1";
         // 
@@ -677,6 +683,32 @@ partial class Form1
         lblCleintName.TabIndex = 0;
         lblCleintName.Text = "Client Name: ";
         // 
+        // lblTechnician
+        // 
+        lblTechnician.Font = new System.Drawing.Font("Segoe UI", 18F);
+        lblTechnician.Location = new System.Drawing.Point(10, 112);
+        lblTechnician.Name = "lblTechnician";
+        lblTechnician.Size = new System.Drawing.Size(135, 34);
+        lblTechnician.TabIndex = 9;
+        // 
+        // cbTechnicianFilter
+        // 
+        cbTechnicianFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+        cbTechnicianFilter.FormattingEnabled = true;
+        cbTechnicianFilter.Location = new System.Drawing.Point(166, 133);
+        cbTechnicianFilter.Name = "cbTechnicianFilter";
+        cbTechnicianFilter.Size = new System.Drawing.Size(156, 23);
+        cbTechnicianFilter.TabIndex = 10;
+        // 
+        // lbltechnicians
+        // 
+        lbltechnicians.Font = new System.Drawing.Font("Segoe UI", 18F);
+        lbltechnicians.Location = new System.Drawing.Point(11, 122);
+        lbltechnicians.Name = "lbltechnicians";
+        lbltechnicians.Size = new System.Drawing.Size(149, 34);
+        lbltechnicians.TabIndex = 11;
+        lbltechnicians.Text = "Technicians: ";
+        // 
         // Form1
         // 
         AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -702,6 +734,12 @@ partial class Form1
         ((System.ComponentModel.ISupportInitialize)dgvClientsList).EndInit();
         ResumeLayout(false);
     }
+
+    private System.Windows.Forms.Label lbltechnicians;
+
+    private System.Windows.Forms.ComboBox cbTechnicianFilter;
+
+    private System.Windows.Forms.Label lblTechnician;
 
     private System.Windows.Forms.DataGridView dgvClientsList;
 
