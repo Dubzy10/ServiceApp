@@ -32,7 +32,7 @@ public partial class Form1 : Form
             DataTable dtTechs = DataBaseManager.GetAllTechnicians(); 
             foreach (DataRow row in dtTechs.Rows)
             {
-                cbTechnicianFilter.Items.Add(row["Name"].ToString());
+                cbTechnicianFilter.Items.Add(row["Technician_Name"].ToString());
             }
 
             cbTechnicianFilter.SelectedIndex = 0;
@@ -81,6 +81,7 @@ public partial class Form1 : Form
         string email = txtBoxClientEmailAddress.Text.Trim();
         string device = txtBoxDeviceName.Text.Trim();
         string issue = txtBoxIssueDescription.Text.Trim();
+        bool isWarranty = chkWarranty.Checked;
     
         if (string.IsNullOrEmpty(clientName) ||
             string.IsNullOrEmpty(device) ||
@@ -126,7 +127,8 @@ public partial class Form1 : Form
         
         try
         {
-            int clientID = DataBaseManager.CreateRepairRequest(clientName, phone, email, device, issue, technicianId);
+            int clientID = DataBaseManager.CreateRepairRequest(clientName, phone, email, device, issue, technicianId,
+                isWarranty);
 
             MessageBox.Show($"Successful client entry with ID: {clientID}!", "Success", 
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -166,6 +168,8 @@ public partial class Form1 : Form
         txtBoxClientEmailAddress.Clear();
         txtBoxDeviceName.Clear();
         txtBoxIssueDescription.Clear();
+        chkWarranty.Checked = false;
+        
         if (cbTechnicians.Items.Count > 0)
         {
             cbTechnicians.SelectedIndex = 0;
@@ -306,6 +310,15 @@ public partial class Form1 : Form
     private void cbPartsRequest_SelectedIndexChanged(object sender, EventArgs e)
     {
         RefreshPartsList();
+        
+        if (cbPartsRequest.SelectedValue != null && int.TryParse(cbPartsRequest.SelectedValue.ToString(), 
+                out int requestId))
+        {
+            bool isFinished = DataBaseManager.IsRequestFinished(requestId);
+            
+            btnDeletePart.Enabled = !isFinished;
+            btnAddItem.Enabled = !isFinished; 
+        }
     }
 
     private void btnAddItem_Click(object sender, EventArgs e)
@@ -459,57 +472,59 @@ public partial class Form1 : Form
         }
     }
 
-    private void btnExportToCSV_Click(object sender, EventArgs e)
+  private void btnExportToCSV_Click(object sender, EventArgs e)
+{
+    if (dgvTechniciansList.Rows.Count == 0)
     {
-        if (dgvTechniciansList.Rows.Count == 0)
-        {
-            MessageBox.Show("There is no data to export. Please generate a report first.", "Warning", 
-                MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            return;
-        }
+        MessageBox.Show("There is no data to export. Please generate a report first.", "Warning", 
+            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        return;
+    }
 
-        using (SaveFileDialog sfd = new SaveFileDialog())
-        {
-            sfd.Filter = "CSV Files (*.csv)|*.csv";
-            sfd.FileName = $"Report_{DateTime.Now:yyyyMMdd_HHmm}.csv";
+    using (SaveFileDialog sfd = new SaveFileDialog())
+    {
+        sfd.Filter = "CSV Files (*.csv)|*.csv";
+        sfd.FileName = $"Report_{DateTime.Now:yyyyMMdd_HHmm}.csv";
 
-            if (sfd.ShowDialog() == DialogResult.OK)
+        if (sfd.ShowDialog() == DialogResult.OK)
+        {
+            try
             {
-                try
+                using (System.IO.StreamWriter sw = new System.IO.StreamWriter(sfd.FileName, false, 
+                           System.Text.Encoding.UTF8))
                 {
-                    using (System.IO.StreamWriter sw = new System.IO.StreamWriter(sfd.FileName, false, 
-                               System.Text.Encoding.UTF8))
+                    sw.WriteLine("sep=;");
+
+                    string[] columnNames = dgvTechniciansList.Columns
+                        .Cast<DataGridViewColumn>()
+                        .Select(column => $"\"{column.HeaderText}\"")
+                        .ToArray();
+                    sw.WriteLine(string.Join(";", columnNames));
+                    
+                    foreach (DataGridViewRow row in dgvTechniciansList.Rows)
                     {
-                        string[] columnNames = dgvTechniciansList.Columns
-                            .Cast<DataGridViewColumn>()
-                            .Select(column => $"\"{column.HeaderText}\"")
-                            .ToArray();
-                        sw.WriteLine(string.Join(";", columnNames));
-                        
-                        foreach (DataGridViewRow row in dgvTechniciansList.Rows)
+                        if (!row.IsNewRow)
                         {
-                            if (!row.IsNewRow)
-                            {
-                                string[] fields = row.Cells
-                                    .Cast<DataGridViewCell>()
-                                    .Select(cell => $"\"{cell.Value?.ToString() ?? ""}\"")
-                                    .ToArray();
-                                sw.WriteLine(string.Join(";", fields));
-                            }
+                            string[] fields = row.Cells
+                                .Cast<DataGridViewCell>()
+                                .Select(cell => $"\"{cell.Value?.ToString() ?? ""}\"")
+                                .ToArray();
+                            sw.WriteLine(string.Join(";", fields));
                         }
                     }
+                }
 
-                    MessageBox.Show("Report exported successfully to CSV!", "Success", MessageBoxButtons.OK, 
-                        MessageBoxIcon.Information);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error exporting CSV: " + ex.Message, "Error", MessageBoxButtons.OK, 
-                        MessageBoxIcon.Error);
-                }
+                MessageBox.Show("Report exported successfully to CSV!", "Success", MessageBoxButtons.OK, 
+                    MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error exporting CSV: " + ex.Message, "Error", MessageBoxButtons.OK, 
+                    MessageBoxIcon.Error);
             }
         }
     }
+}
     
     private void LoadClientsData()
     {
@@ -732,12 +747,48 @@ private void btnDeleteClient_Click(object sender, EventArgs e)
         cbTechnicianFilter.Items.Clear();
         cbTechnicianFilter.Items.Add("All");
         
-        DataTable dtTechnicians = DataBaseManager.GetAllTechnicians(); 
+        DataTable dtTechnicians = DataBaseManager.GetAllTechnicians();
         foreach (DataRow row in dtTechnicians.Rows)
         {
             cbTechnicianFilter.Items.Add(row["Name"].ToString());
         }
-
         cbTechnicianFilter.SelectedIndex = 0; 
+    }
+
+    private void btnDeletePart_Click(object sender, EventArgs e)
+    {
+        if (dgvPartsList.SelectedRows.Count == 0)
+        {
+            MessageBox.Show("Please select an item from the list to remove.", "Warning", 
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return;
+        }
+
+        var confirmResult = MessageBox.Show("Are you sure you want to remove this item?", 
+            "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+        if (confirmResult == DialogResult.Yes)
+        {
+            try
+            {
+                int itemId = Convert.ToInt32(dgvPartsList.SelectedRows[0].Cells["ID"].Value);
+                DataBaseManager.DeleteRequestItem(itemId);
+                LoadPartsRequestsComboBox(); 
+
+                MessageBox.Show("Item removed successfully!", "Success", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error deleting item: " + ex.Message, "Error", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }    
+    }
+    
+    private void UpdateTotalPrice(int requestId)
+    {
+        decimal totalPrice = DataBaseManager.GetRequestTotalPrice(requestId);
+        lblTotalPrice.Text = $"Total Price: {totalPrice:F2} €";
     }
 }

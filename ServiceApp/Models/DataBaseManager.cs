@@ -65,20 +65,20 @@ public class DataBaseManager
     }
 
     public static int CreateRepairRequest(string clientName, string phone, string email, string device, string issue, 
-        int technicianId)
+        int technicianId, bool isWarranty)
     {
         using (SqlConnection conn = GetConnection())
         {
             conn.Open();
 
             string insertClientQuery = @"
-            INSERT INTO CLIENTS (Full_Name, Phone_Number, Email)
-            OUTPUT INSERTED.ID
-            VALUES (@Full_Name, @Phone_Number, @Email);";
+        INSERT INTO CLIENTS (Full_Name, Phone_Number, Email)
+        OUTPUT INSERTED.ID
+        VALUES (@Full_Name, @Phone_Number, @Email);";
 
             string insertRequestQuery = @"
-            INSERT INTO REPAIR_REQUEST (Client_ID, Technician_ID, Device_Name, Issue_Description)
-            VALUES (@Client_ID, @Technician_ID, @Device_Name, @Issue_Description);";
+        INSERT INTO REPAIR_REQUEST (Client_ID, Technician_ID, Device_Name, Issue_Description, Is_Warranty)
+        VALUES (@Client_ID, @Technician_ID, @Device_Name, @Issue_Description, @Is_Warranty);";
 
             int clientId = 0;
 
@@ -97,6 +97,7 @@ public class DataBaseManager
                 cmdReq.Parameters.AddWithValue("@Technician_ID", technicianId);
                 cmdReq.Parameters.AddWithValue("@Device_Name", device);
                 cmdReq.Parameters.AddWithValue("@Issue_Description", issue);
+                cmdReq.Parameters.AddWithValue("@Is_Warranty", isWarranty);
 
                 cmdReq.ExecuteNonQuery();
             }
@@ -282,8 +283,8 @@ public class DataBaseManager
                 FROM Items_Request
                 GROUP BY Request_ID
             ) it ON r.ID = it.Request_ID
-            WHERE CAST(r.Acceptance_Date AS DATE) >= @FromDate 
-              AND CAST(r.Acceptance_Date AS DATE) <= @ToDate
+            WHERE CAST(r.Request_Date AS DATE) >= @FromDate 
+              AND CAST(r.Request_Date AS DATE) <= @ToDate
             GROUP BY t.Technician_Name, r.Status
             ORDER BY t.Technician_Name, r.Status";
 
@@ -393,5 +394,78 @@ public static int GetRequestItemsCount(int requestId)
             return (int)cmd.ExecuteScalar();
         }
     }
+}
+
+public static void DeleteRequestItem(int itemId)
+{
+    using (SqlConnection conn = new SqlConnection(connectionString))
+    {
+        string query = "DELETE FROM Items_Request WHERE ID = @ID";
+        using (SqlCommand cmd = new SqlCommand(query, conn))
+        {
+            cmd.Parameters.AddWithValue("@ID", itemId);
+            conn.Open();
+            cmd.ExecuteNonQuery();
+        }
+    }
+}
+
+public static decimal GetRequestTotalPrice(int requestId)
+{
+    decimal total = 0m;
+    bool isWarranty = false;
+
+    using (SqlConnection conn = GetConnection()) 
+    {
+        conn.Open();
+        
+        string warrantyQuery = "SELECT Is_Warranty FROM REPAIR_REQUEST WHERE ID = @ID";
+        using (SqlCommand cmd = new SqlCommand(warrantyQuery, conn))
+        {
+            cmd.Parameters.AddWithValue("@ID", requestId);
+            object result = cmd.ExecuteScalar();
+            if (result != null && result != DBNull.Value)
+            {
+                isWarranty = Convert.ToBoolean(result);
+            }
+        }
+        
+        string partsQuery = "SELECT SUM(Price) FROM Items_Request WHERE Request_ID = @ID";
+        using (SqlCommand cmd = new SqlCommand(partsQuery, conn))
+        {
+            cmd.Parameters.AddWithValue("@ID", requestId);
+            object partsResult = cmd.ExecuteScalar();
+            if (partsResult != null && partsResult != DBNull.Value)
+            {
+                total = Convert.ToDecimal(partsResult);
+            }
+        }
+    }
+    
+    if (!isWarranty)
+    {
+        total += 10.00m;
+    }
+
+    return total;
+}
+
+public static bool IsRequestFinished(int requestId)
+{
+    using (SqlConnection conn = GetConnection())
+    {
+        string query = "SELECT Status FROM REPAIR_REQUEST WHERE ID = @ID";
+        using (SqlCommand cmd = new SqlCommand(query, conn))
+        {
+            cmd.Parameters.AddWithValue("@ID", requestId);
+            conn.Open();
+            object result = cmd.ExecuteScalar();
+            if (result != null && result != DBNull.Value)
+            {
+                return result.ToString().Trim().Equals("finished", StringComparison.OrdinalIgnoreCase);
+            }
+        }
+    }
+    return false;
 }
 }

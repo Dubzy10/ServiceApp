@@ -31,6 +31,7 @@ partial class Form1
     {
         tbCreateARequest = new System.Windows.Forms.TabControl();
         tabPage1 = new System.Windows.Forms.TabPage();
+        chkWarranty = new System.Windows.Forms.CheckBox();
         label1 = new System.Windows.Forms.Label();
         cbTechnicians = new System.Windows.Forms.ComboBox();
         lblClientEmailAddress = new System.Windows.Forms.Label();
@@ -45,6 +46,9 @@ partial class Form1
         lblClientName = new System.Windows.Forms.Label();
         lblDeviceForRepair = new System.Windows.Forms.Label();
         tabPage2 = new System.Windows.Forms.TabPage();
+        lbltechnicians = new System.Windows.Forms.Label();
+        cbTechnicianFilter = new System.Windows.Forms.ComboBox();
+        lblTechnician = new System.Windows.Forms.Label();
         btnUpdateStatus = new System.Windows.Forms.Button();
         cbNewStatus = new System.Windows.Forms.ComboBox();
         lblChangeStatus = new System.Windows.Forms.Label();
@@ -63,6 +67,8 @@ partial class Form1
         lblFrom = new System.Windows.Forms.Label();
         dgvTechniciansList = new System.Windows.Forms.DataGridView();
         tabPage4 = new System.Windows.Forms.TabPage();
+        labelTotalPrice = new System.Windows.Forms.Label();
+        btnDeletePart = new System.Windows.Forms.Button();
         lblTotalPrice = new System.Windows.Forms.Label();
         dgvPartsList = new System.Windows.Forms.DataGridView();
         btnAddItem = new System.Windows.Forms.Button();
@@ -86,9 +92,6 @@ partial class Form1
         lblClientPhone = new System.Windows.Forms.Label();
         txtClientName = new System.Windows.Forms.TextBox();
         lblCleintName = new System.Windows.Forms.Label();
-        lblTechnician = new System.Windows.Forms.Label();
-        cbTechnicianFilter = new System.Windows.Forms.ComboBox();
-        lbltechnicians = new System.Windows.Forms.Label();
         tbCreateARequest.SuspendLayout();
         tabPage1.SuspendLayout();
         tabPage2.SuspendLayout();
@@ -119,6 +122,7 @@ partial class Form1
         // 
         // tabPage1
         // 
+        tabPage1.Controls.Add(chkWarranty);
         tabPage1.Controls.Add(label1);
         tabPage1.Controls.Add(cbTechnicians);
         tabPage1.Controls.Add(lblClientEmailAddress);
@@ -139,6 +143,16 @@ partial class Form1
         tabPage1.TabIndex = 0;
         tabPage1.Text = "Create a request";
         tabPage1.UseVisualStyleBackColor = true;
+        // 
+        // chkWarranty
+        // 
+        chkWarranty.Font = new System.Drawing.Font("Segoe UI", 18F);
+        chkWarranty.Location = new System.Drawing.Point(314, 560);
+        chkWarranty.Name = "chkWarranty";
+        chkWarranty.Size = new System.Drawing.Size(227, 70);
+        chkWarranty.TabIndex = 24;
+        chkWarranty.Text = "Under Warrandy (0.00 base fee)";
+        chkWarranty.UseVisualStyleBackColor = true;
         // 
         // label1
         // 
@@ -274,6 +288,32 @@ partial class Form1
         tabPage2.TabIndex = 1;
         tabPage2.Text = "Requests list";
         tabPage2.UseVisualStyleBackColor = true;
+        // 
+        // lbltechnicians
+        // 
+        lbltechnicians.Font = new System.Drawing.Font("Segoe UI", 18F);
+        lbltechnicians.Location = new System.Drawing.Point(11, 122);
+        lbltechnicians.Name = "lbltechnicians";
+        lbltechnicians.Size = new System.Drawing.Size(149, 34);
+        lbltechnicians.TabIndex = 11;
+        lbltechnicians.Text = "Technicians: ";
+        // 
+        // cbTechnicianFilter
+        // 
+        cbTechnicianFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+        cbTechnicianFilter.FormattingEnabled = true;
+        cbTechnicianFilter.Location = new System.Drawing.Point(166, 133);
+        cbTechnicianFilter.Name = "cbTechnicianFilter";
+        cbTechnicianFilter.Size = new System.Drawing.Size(156, 23);
+        cbTechnicianFilter.TabIndex = 10;
+        // 
+        // lblTechnician
+        // 
+        lblTechnician.Font = new System.Drawing.Font("Segoe UI", 18F);
+        lblTechnician.Location = new System.Drawing.Point(10, 112);
+        lblTechnician.Name = "lblTechnician";
+        lblTechnician.Size = new System.Drawing.Size(135, 34);
+        lblTechnician.TabIndex = 9;
         // 
         // btnUpdateStatus
         // 
@@ -443,6 +483,8 @@ partial class Form1
         // 
         // tabPage4
         // 
+        tabPage4.Controls.Add(labelTotalPrice);
+        tabPage4.Controls.Add(btnDeletePart);
         tabPage4.Controls.Add(lblTotalPrice);
         tabPage4.Controls.Add(dgvPartsList);
         tabPage4.Controls.Add(btnAddItem);
@@ -461,6 +503,26 @@ partial class Form1
         tabPage4.TabIndex = 3;
         tabPage4.Text = "Parts";
         tabPage4.UseVisualStyleBackColor = true;
+        // 
+        // labelTotalPrice
+        // 
+        labelTotalPrice.Font = new System.Drawing.Font("Segoe UI", 18F);
+        labelTotalPrice.Location = new System.Drawing.Point(799, 13);
+        labelTotalPrice.Name = "labelTotalPrice";
+        labelTotalPrice.Size = new System.Drawing.Size(194, 33);
+        labelTotalPrice.TabIndex = 12;
+        labelTotalPrice.Text = "Total price: 0.00";
+        // 
+        // btnDeletePart
+        // 
+        btnDeletePart.Font = new System.Drawing.Font("Segoe UI", 18F);
+        btnDeletePart.Location = new System.Drawing.Point(266, 160);
+        btnDeletePart.Name = "btnDeletePart";
+        btnDeletePart.Size = new System.Drawing.Size(183, 68);
+        btnDeletePart.TabIndex = 11;
+        btnDeletePart.Text = "Delete Item";
+        btnDeletePart.UseVisualStyleBackColor = true;
+        btnDeletePart.Click += btnDeletePart_Click;
         // 
         // lblTotalPrice
         // 
@@ -683,32 +745,6 @@ partial class Form1
         lblCleintName.TabIndex = 0;
         lblCleintName.Text = "Client Name: ";
         // 
-        // lblTechnician
-        // 
-        lblTechnician.Font = new System.Drawing.Font("Segoe UI", 18F);
-        lblTechnician.Location = new System.Drawing.Point(10, 112);
-        lblTechnician.Name = "lblTechnician";
-        lblTechnician.Size = new System.Drawing.Size(135, 34);
-        lblTechnician.TabIndex = 9;
-        // 
-        // cbTechnicianFilter
-        // 
-        cbTechnicianFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-        cbTechnicianFilter.FormattingEnabled = true;
-        cbTechnicianFilter.Location = new System.Drawing.Point(166, 133);
-        cbTechnicianFilter.Name = "cbTechnicianFilter";
-        cbTechnicianFilter.Size = new System.Drawing.Size(156, 23);
-        cbTechnicianFilter.TabIndex = 10;
-        // 
-        // lbltechnicians
-        // 
-        lbltechnicians.Font = new System.Drawing.Font("Segoe UI", 18F);
-        lbltechnicians.Location = new System.Drawing.Point(11, 122);
-        lbltechnicians.Name = "lbltechnicians";
-        lbltechnicians.Size = new System.Drawing.Size(149, 34);
-        lbltechnicians.TabIndex = 11;
-        lbltechnicians.Text = "Technicians: ";
-        // 
         // Form1
         // 
         AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -734,6 +770,12 @@ partial class Form1
         ((System.ComponentModel.ISupportInitialize)dgvClientsList).EndInit();
         ResumeLayout(false);
     }
+
+    private System.Windows.Forms.Label labelTotalPrice;
+
+    private System.Windows.Forms.CheckBox chkWarranty;
+
+    private System.Windows.Forms.Button btnDeletePart;
 
     private System.Windows.Forms.Label lbltechnicians;
 
