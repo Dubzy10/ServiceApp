@@ -67,7 +67,6 @@ partial class Form1
         lblFrom = new System.Windows.Forms.Label();
         dgvTechniciansList = new System.Windows.Forms.DataGridView();
         tabPage4 = new System.Windows.Forms.TabPage();
-        labelTotalPrice = new System.Windows.Forms.Label();
         btnDeletePart = new System.Windows.Forms.Button();
         lblTotalPrice = new System.Windows.Forms.Label();
         dgvPartsList = new System.Windows.Forms.DataGridView();
@@ -483,7 +482,6 @@ partial class Form1
         // 
         // tabPage4
         // 
-        tabPage4.Controls.Add(labelTotalPrice);
         tabPage4.Controls.Add(btnDeletePart);
         tabPage4.Controls.Add(lblTotalPrice);
         tabPage4.Controls.Add(dgvPartsList);
@@ -503,15 +501,6 @@ partial class Form1
         tabPage4.TabIndex = 3;
         tabPage4.Text = "Parts";
         tabPage4.UseVisualStyleBackColor = true;
-        // 
-        // labelTotalPrice
-        // 
-        labelTotalPrice.Font = new System.Drawing.Font("Segoe UI", 18F);
-        labelTotalPrice.Location = new System.Drawing.Point(799, 13);
-        labelTotalPrice.Name = "labelTotalPrice";
-        labelTotalPrice.Size = new System.Drawing.Size(194, 33);
-        labelTotalPrice.TabIndex = 12;
-        labelTotalPrice.Text = "Total price: 0.00";
         // 
         // btnDeletePart
         // 
@@ -770,8 +759,6 @@ partial class Form1
         ((System.ComponentModel.ISupportInitialize)dgvClientsList).EndInit();
         ResumeLayout(false);
     }
-
-    private System.Windows.Forms.Label labelTotalPrice;
 
     private System.Windows.Forms.CheckBox chkWarranty;
 

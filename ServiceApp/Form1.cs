@@ -124,7 +124,7 @@ public partial class Form1 : Form
                 "Limit Reached", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return;
         }
-        
+         
         try
         {
             int clientID = DataBaseManager.CreateRepairRequest(clientName, phone, email, device, issue, technicianId,
@@ -292,18 +292,31 @@ public partial class Form1 : Form
         {
             DataTable dt = DataBaseManager.GetItemsForRequest(requestId);
             dgvPartsList.DataSource = dt;
-            decimal total = 10.00m;
+            
+            bool isWarranty = DataBaseManager.IsWarranty(requestId);
+            
+            decimal diagnosticFee = isWarranty ? 0.00m : 10.00m;
+            decimal partsTotal = 0.00m;
+
             foreach (DataRow row in dt.Rows)
             {
-                total += Convert.ToDecimal(row["Line Total (€)"]);
+                partsTotal += Convert.ToDecimal(row["Line Total (€)"]);
             }
 
-            lblTotalPrice.Text = $"Total: {total:F2} € (including 10 euros diagnostic fee)";
+            decimal total = partsTotal + diagnosticFee;
+            
+            if (isWarranty)
+            {
+                lblTotalPrice.Text = $"Total: {total:F2} € (Warranty - 0.00 € diagnostic fee)";
+            }
+            else
+            {
+                lblTotalPrice.Text = $"Total: {total:F2} € (including 10 euros diagnostic fee)";
+            }
         }
         catch (Exception ex)
         {
-            MessageBox.Show("Error loading parts: " + ex.Message, "Error", MessageBoxButtons.OK, 
-                MessageBoxIcon.Error);
+            MessageBox.Show("Error loading parts: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 

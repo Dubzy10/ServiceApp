@@ -468,4 +468,19 @@ public static bool IsRequestFinished(int requestId)
     }
     return false;
 }
+
+public static bool IsWarranty(int requestId)
+{
+    using (SqlConnection conn = new SqlConnection(connectionString))
+    {
+        conn.Open();
+        string query = "SELECT Is_Warranty FROM REPAIR_REQUEST WHERE ID = @id";
+        using (SqlCommand cmd = new SqlCommand(query, conn))
+        {
+            cmd.Parameters.AddWithValue("@id", requestId);
+            object result = cmd.ExecuteScalar();
+            return result != null && Convert.ToBoolean(result);
+        }
+    }
+}
 }
